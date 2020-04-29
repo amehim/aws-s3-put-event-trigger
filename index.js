@@ -21,15 +21,24 @@ exports.handler = async (event) => {
         let validTime = startDate < currentDate && endDate > currentDate
         if (!validTime) {
             const message = {
-                "Status": "File uploaded outside time window."
+                default: JSON.stringify({
+                    "Status": "File uploaded outside time window."
+                })
             };
 
             const params = {
                 Message: JSON.stringify(message),
                 MessageStructure: 'json',
-                TopicArn: process.env.TOPIC_ARN
+                TopicArn: "<add-topic-arn>"
             };
             await awsSns.publish(params).promise();
+            console.log("SNS invoked")
+            return {
+                statusCode: 200,
+                body: JSON.stringify({
+                    'Message': 'SNS Invoked'
+                })
+            };
         }
 
         return {
